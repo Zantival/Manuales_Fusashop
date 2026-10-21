@@ -1,0 +1,41 @@
+---
+title: "Rendimiento, Optimización y Resiliencia"
+description: "Estrategias de alta eficiencia en FusaShop: Eliminación de consultas N+1, compresión de transporte Gzip, WebP y caché estratégica."
+---
+
+## 1. Eliminación Radical de Consultas N+1
+
+El problema de consultas N+1 es la principal causa de lentitud en aplicaciones ORM. En FusaShop, todas las consultas de catálogos y órdenes utilizan **Carga Ansiosa (Eager Loading)** obligatoria:
+
+```php
+// Consulta optimizada: Resuelve 20 productos con sus tiendas y reseñas en solo 3 queries SQL
+$products = Product::with(['merchant.companyProfile', 'reviews'])
+    ->where('is_active', true)
+    ->paginate(12);
+```
+
+Para prevenir regresiones en desarrollo, el entorno local activa la prevención estricta de carga perezosa (`Model::preventLazyLoading(!app()->isProduction())`).
+
+---
+
+## 2. Negociación Gráfica en Formato WebP
+
+Las imágenes representan más del 70% del peso de una página de comercio electrónico:
+- Todas las imágenes subidas por los comerciantes se redimensionan y se convierten al formato moderno **WebP** con calidad 82%.
+- Los elementos visuales utilizan etiquetas `<picture>` con fallback automático para navegadores antiguos:
+
+```html
+<picture>
+  <source srcset="/assets/img/producto.webp" type="image/webp">
+  <img src="/assets/img/producto.jpg" alt="Producto" loading="lazy" decoding="async">
+</picture>
+```
+
+---
+
+## 3. Compresión de Transporte en Servidor (Gzip / Deflate)
+
+El middleware `CompressResponse` intercepta las respuestas HTTP salientes:
+- Evalúa la cabecera `Accept-Encoding` del cliente.
+- Aplica compresión al vuelo mediante `gzencode($content, 6)`.
+- Reduce una respuesta HTML/JSON típica de 120 KB a tan solo **18 KB**, acelerando la carga en conexiones móviles con cobertura limitada.

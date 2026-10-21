@@ -1,37 +1,111 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Fusashop",
+  "name": "FusaShop",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#006C47",
+    "light": "#10B981",
+    "dark": "#064E3B"
   },
   "favicon": "/favicon.svg",
   "navigation": {
-    "pages": [
+    "tabs": [
       {
-        "group": "Getting Started",
-        "pages": [
-          "index",
-          "quickstart"
+        "tab": "Manual de Usuario",
+        "groups": [
+          {
+            "group": "Visión General",
+            "pages": [
+              "index",
+              "usuario/index"
+            ]
+          },
+          {
+            "group": "Módulo del Consumidor",
+            "pages": [
+              "usuario/consumidor"
+            ]
+          },
+          {
+            "group": "Módulo del Comerciante",
+            "pages": [
+              "usuario/comerciante"
+            ]
+          },
+          {
+            "group": "Módulo de Analistas / Admin",
+            "pages": [
+              "usuario/analista"
+            ]
+          },
+          {
+            "group": "Soporte y Preguntas Frecuentes",
+            "pages": [
+              "usuario/faq-soporte"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Manual de Desarrollador",
+        "groups": [
+          {
+            "group": "Arquitectura y Stack",
+            "pages": [
+              "desarrollador/index",
+              "desarrollador/estructura"
+            ]
+          },
+          {
+            "group": "Modelado y Dominio",
+            "pages": [
+              "desarrollador/modelos-cifrado",
+              "desarrollador/servicios-dominio"
+            ]
+          },
+          {
+            "group": "Integraciones & IA",
+            "pages": [
+              "desarrollador/integraciones",
+              "desarrollador/fusabot-mcp"
+            ]
+          },
+          {
+            "group": "Calidad & Despliegue",
+            "pages": [
+              "desarrollador/seguridad-testing",
+              "desarrollador/instalacion-local"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Manual Técnico",
+        "groups": [
+          {
+            "group": "Diseño de Sistemas",
+            "pages": [
+              "tecnico/index",
+              "tecnico/diccionario-datos",
+              "tecnico/maquinas-estados"
+            ]
+          },
+          {
+            "group": "Seguridad y Performance",
+            "pages": [
+              "tecnico/seguridad-hardening",
+              "tecnico/rendimiento-resiliencia"
+            ]
+          },
+          {
+            "group": "Infraestructura & Operaciones",
+            "pages": [
+              "tecnico/despliegue-operaciones"
+            ]
+          }
         ]
       }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
-      ]
-    }
+    ]
   },
   "logo": {
     "light": "/logo/light.svg",
@@ -40,33 +114,27 @@
   "navbar": {
     "links": [
       {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
+        "label": "Manual Usuario (PDF)",
+        "href": "/pdfs/Manual_de_Usuario_FusaShop.pdf"
+      },
+      {
+        "label": "Manual Dev (PDF)",
+        "href": "/pdfs/Manual_de_Desarrollador_FusaShop.pdf"
+      },
+      {
+        "label": "Manual Técnico (PDF)",
+        "href": "/pdfs/Manual_Tecnico_FusaShop.pdf"
       }
     ],
     "primary": {
       "type": "button",
-      "label": "Dashboard",
-      "href": "https://app.mintlify.com"
+      "label": "Portal FusaShop",
+      "href": "https://fusashop.com"
     }
-  },
-  "contextual": {
-    "options": [
-      "copy",
-      "view",
-      "chatgpt",
-      "claude",
-      "perplexity",
-      "mcp",
-      "cursor",
-      "vscode"
-    ]
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "github": "https://github.com/Zantival/fusashop2"
     }
   }
 }

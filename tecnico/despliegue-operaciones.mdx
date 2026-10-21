@@ -1,0 +1,80 @@
+---
+title: "Despliegue en Producción y Operaciones"
+description: "Guía de despliegue para FusaShop en servidores VPS / Hostinger, supervisión de workers, cron jobs y checklist de pase a producción."
+---
+
+## 1. Dimensionamiento Mínimo de Servidor
+
+Para atender un tráfico estimado de hasta 100 usuarios concurrentes y 1,000 pedidos diarios:
+
+| Recurso | Requisito Mínimo Recomendado |
+|---|---|
+| **CPU** | 2 vCPUs (x86_64 o ARM64) |
+| **Memoria RAM** | 4 GB (2 GB para PHP-FPM, 1 GB para MariaDB, 1 GB para Workers/SO) |
+| **Almacenamiento** | 40 GB NVMe SSD |
+| **Sistema Operativo** | Ubuntu 22.04 LTS / 24.04 LTS o Debian 12 |
+| **Servidor Web** | Nginx 1.24+ o Apache 2.4 con PHP-FPM 8.2+ |
+
+---
+
+## 2. Configuración de Workers con Supervisor
+
+Para que los procesos asíncronos (Envía, Factus, Notificaciones) se ejecuten sin interrupción, se configura el demonio **Supervisor**:
+
+```ini
+[program:fusashop-worker]
+process_name=%(program_name)s_%(process_num)02d
+command=php /var/www/fusashop2/artisan queue:work database --sleep=3 --tries=3 --max-time=3600
+autostart=true
+autorestart=true
+stopasgroup=true
+killasgroup=true
+user=www-data
+numprocs=2
+redirect_stderr=true
+stdout_logfile=/var/www/fusashop2/storage/logs/worker.log
+stopwaitsecs=3600
+```
+
+---
+
+## 3. Cron Job para Laravel Scheduler
+
+En el crontab del usuario del servidor web (`crontab -e -u www-data`):
+
+```bash
+* * * * * cd /var/www/fusashop2 && php artisan schedule:run >> /dev/null 2>&1
+```
+
+Esto ejecuta automáticamente cada minuto las tareas programadas:
+- Liberación de reservas de stock vencidas (30 minutos sin pago).
+- Verificación de estados de entrega de Envía Colvanes.
+- Limpieza de tokens temporales caducados.
+
+---
+
+## 4. Checklist de Pase a Producción (Go-Live)
+
+Ejecuta los siguientes comandos en la raíz del proyecto para maximizar el rendimiento:
+
+```bash
+# 1. Modo de producción
+APP_ENV=production
+APP_DEBUG=false
+
+# 2. Caché de configuración y rutas
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+php artisan event:cache
+
+# 3. Enlace simbólico de almacenamiento público
+php artisan storage:link
+
+# 4. Verificación de permisos
+chown -R www-data:www-data storage bootstrap/cache
+chmod -R 775 storage bootstrap/cache
+
+# 5. Reinicio de workers de cola
+php artisan queue:restart
+```

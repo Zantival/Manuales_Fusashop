@@ -1,0 +1,39 @@
+---
+title: "Seguridad, Criptografía y Hardening"
+description: "Medidas de seguridad defensiva en FusaShop: Cifrado en reposo y en tránsito, cabeceras de protección HTTP y mitigación del OWASP Top 10."
+---
+
+## 1. Arquitectura Criptográfica
+
+FusaShop aplica el principio de defensa en profundidad en todas las capas del sistema:
+
+- **Cifrado de Contraseñas:** Algoritmo **Bcrypt** con factor de costo 12 (`PASSWORD_BCRYPT`).
+- **Cifrado en Reposo de Credenciales:** Claves y secretos de pasarela cifrados con **AES-256-CBC** autenticado con HMAC-SHA256 (`EncryptedGatewaySecret`).
+- **Firmas de Integridad:** Huellas digitales **SHA-256** en transferencias Wompi y enlaces de pago.
+- **Tokens de Sesión y Autenticación:** Tokens aleatorios criptográficamente seguros mediante `bin2hex(random_bytes(32))`.
+
+---
+
+## 2. Hardening de Cabeceras HTTP (`SecurityHeaders`)
+
+Todas las respuestas emitidas por el servidor incluyen cabeceras estrictas de protección:
+
+```http
+X-Frame-Options: SAMEORIGIN
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Referrer-Policy: strict-origin-when-cross-origin
+Permissions-Policy: camera=(), microphone=(), geolocation=(self)
+```
+
+---
+
+## 3. Mitigación de Vulnerabilidades OWASP Top 10
+
+| Vector de Ataque | Mecanismo de Defensa en FusaShop |
+|---|---|
+| **SQL Injection (A03)** | Uso exclusivo de sentencias preparadas y vinculación de parámetros con Eloquent ORM. No se concatenan cadenas SQL en crudo. |
+| **Cross-Site Scripting (XSS - A03)** | Escapado automático contextual en Blade (`{{ }}`), saneamiento previo de campos con `strip_tags()` y sanitización de Markdown. |
+| **Cross-Site Request Forgery (CSRF - A01)** | Tokens criptográficos sincronizados por sesión (`@csrf`) validados en todas las peticiones `POST`, `PUT`, `PATCH` y `DELETE`. |
+| **Insecure Direct Object References (IDOR - A01)** | Validación estricta de propiedad mediante políticas de autorización (`Gate` y `Policy`). Un comerciante nunca puede ver órdenes de otra tienda. |
+| **Fuerza Bruta y DoS (A07)** | Limitadores de tasa (`throttle:5,1` para login y registro; `throttle:60,1` para APIs y webhooks). |

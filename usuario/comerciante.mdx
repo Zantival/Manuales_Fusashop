@@ -1,0 +1,73 @@
+---
+title: "Módulo del Comerciante (Merchant Center)"
+description: "Manual de operaciones para tiendas y vendedores: Onboarding KYC, configuración de cuentas bancarias y billeteras digitales, inventario, despachos y pauta publicitaria."
+---
+
+## 1. Onboarding Comercial y Verificación KYC
+
+Para vender en FusaShop, los comerciantes deben completar el proceso de conocimiento del cliente (**KYC - Know Your Customer**) que asegura la formalidad del ecosistema:
+
+1. **Datos de la Empresa:** Razón social o nombre comercial, NIT o Cédula de Ciudadanía, dirección física en el Sumapaz, teléfono de atención y georreferenciación en mapa.
+2. **Carga de Documentos Obligatorios:**
+   - **RUT (Registro Único Tributario):** Formato PDF actualizado, expedido por la DIAN.
+   - **Cámara de Comercio (opcional para persona natural, obligatorio para SAS/Ltda):** Certificado de existencia y representación legal con antigüedad menor a 90 días.
+3. **Estado de Validación:** La cuenta inicia en estado `pending` hasta que un analista revisa los documentos y aprueba el perfil (`approved`).
+
+---
+
+## 2. Configuración de Cuentas de Pago y Dispersión
+
+Los comerciantes eligen cómo recibir los fondos netos producto de sus ventas a través del formulario de **Configuración de Dispersión**:
+
+<Tabs>
+  <Tab title="Cuenta Bancaria Tradicional">
+    * **Entidad Bancaria:** Selección del banco (Bancolombia, Banco de Bogotá, Davivienda, BBVA, etc.).
+    * **Tipo de Cuenta:** Cuenta de Ahorros o Cuenta Corriente.
+    * **Número de Cuenta:** Número bancario validado sin caracteres especiales.
+    * **Titular de la Cuenta:** Nombre completo o razón social del beneficiario.
+    * **Documento de Identidad:** Cédula de Ciudadanía o NIT del titular.
+  </Tab>
+  <Tab title="Billetera Digital (Nequi / Daviplata)">
+    * **Proveedor Digital:** Selección entre **Nequi** o **Daviplata**.
+    * **Número Celular Asociado:** Validación estricta de **10 dígitos numéricos** (expresión regular `^[0-9]{10}$`).
+    * **Titular y Cédula:** Datos del propietario de la línea para conciliación automática.
+  </Tab>
+</Tabs>
+
+<Note>
+  Las credenciales API privadas de pasarela (Llaves Wompi del comercio) se almacenan bajo **cifrado simétrico AES-256-CBC** en la base de datos para máxima protección contra filtraciones.
+</Note>
+
+---
+
+## 3. Administración del Catálogo e Inventario
+
+- **Creación de Productos y Servicios:** Nombre, descripción detallada, categoría, precio con IVA o exento, imágenes optimizadas automáticamente a formato WebP.
+- **Control de Inventario y Umbral de Stock Bajo:** Cada producto define su stock disponible y un `low_stock_threshold` (alerta de stock bajo). Cuando el inventario desciende de ese nivel, el comerciante recibe una notificación preventiva inmediata.
+- **Servicios O2O (Online-to-Offline):** Para servicios (peluquerías, consultas, talleres), se marca como `isService` para desactivar el requerimiento de envío físico.
+
+---
+
+## 4. Despacho de Pedidos y Generación de Guías
+
+1. Cuando un cliente compra y paga, el pedido aparece en **Órdenes > En empaque**.
+2. Al hacer clic en **Generar Guía**, FusaShop envía los datos del paquete a **Envía Colvanes**.
+3. El comerciante descarga e imprime el rótulo adhesivo oficial con código de barras en formato PDF.
+4. El camión de Envía recolecta el paquete en la bodega del comerciante en Fusagasugá o el vendedor entrega en el punto de recepción local.
+
+---
+
+## 5. Finanzas Comerciales y Liquidación de Ventas
+
+- **Comisión Tecnológica:** FusaShop descuenta una comisión del 8% sobre el subtotal vendido para el sostenimiento de la infraestructura, pasarela y servidores.
+- **Panel de Finanzas:** Visualización transparente de ventas brutas, comisiones aplicadas, costo de fletes y saldo neto a favor listo para transferir en los cortes semanales.
+
+---
+
+## 6. Pauta Publicitaria: Banners y Tarjetas Promocionales
+
+Los comerciantes pueden pautar en la página de inicio o en categorías destacadas:
+
+- **Banners Principales:** Solicitud con imagen horizontal (1200x400 px), título promocional y enlace a la tienda o producto.
+- **Tarjetas de Promoción Destacadas:** Espacios para productos con descuento especial.
+- **Destino del Pago del Banner:** Se especifica el modo de pago institucional corporativo o dispersión personalizada según la configuración vigente.

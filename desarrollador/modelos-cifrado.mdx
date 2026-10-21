@@ -1,0 +1,62 @@
+---
+title: "Modelado de Datos y Cifrado Criptográfico Transparente"
+description: "Modelos Eloquent, relaciones del dominio y el Custom Cast EncryptedGatewaySecret para salvaguardar credenciales API en reposo."
+---
+
+## 1. Principales Modelos del Dominio
+
+FusaShop cuenta con un modelo relacional robusto con integridad referencial:
+
+- **`User`:** Entidad central de autenticación con control de roles (`consumer`, `merchant`, `analyst`) y subroles (`super_admin`).
+- **`CompanyProfile`:** Perfil comercial del vendedor que incluye estado KYC (`pending`, `approved`, `rejected`), configuración de dispersión (`payout_method_type`, `payout_bank_name`, `payout_account_type`, `payout_account_number`, `payout_account_holder`, `payout_id_number`) y credenciales Wompi.
+- **`Order`:** Orden de compra con máquina de estados (`pending`, `processing`, `shipped`, `delivered`, `cancelled`), detalles de flete, impuestos y facturación electrónica (`invoice_number`, `invoice_cufe`).
+- **`BannerRequest`:** Solicitud de pauta publicitaria con destino de dispersión (`payout_destination_mode`, `payout_bank_name`, `payout_account_number`).
+
+---
+
+## 2. Cifrado Criptográfico en Modelos (`EncryptedGatewaySecret`)
+
+Para proteger los secretos de pasarela de los comerciantes (`wompi_integrity_secret` y `wompi_events_secret`) contra posibles fugas de base de datos o volcados de backup, FusaShop implementa un Cast criptográfico personalizado:
+
+```php
+namespace App\Casts;
+
+use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Crypt;
+
+class EncryptedGatewaySecret implements CastsAttributes
+{
+    public function get(Model $model, string $key, mixed $value, array $attributes): ?string
+    {
+        if (empty($value)) return null;
+        try {
+            return Crypt::decryptString($value);
+        } catch (\Throwable) {
+            return $value; // Fallback seguro para datos preexistentes
+        }
+    }
+
+    public function set(Model $model, string $key, mixed $value, array $attributes): ?string
+    {
+        if (empty($value)) return null;
+        return Crypt::encryptString(trim((string) $value));
+    }
+}
+```
+
+En el modelo `CompanyProfile`, se declara en la matriz de `$casts`:
+
+```php
+protected function casts(): array
+{
+    return [
+        'wompi_integrity_secret' => EncryptedGatewaySecret::class,
+        'wompi_events_secret'    => EncryptedGatewaySecret::class,
+    ];
+}
+```
+
+<Tip>
+  El cifrado utiliza el algoritmo **AES-256-CBC** con HMAC SHA-256 mediante la clave maestra `APP_KEY` de la aplicación, asegurando que los datos en reposo permanezcan ilegibles sin la llave del servidor.
+</Tip>

@@ -1,0 +1,40 @@
+---
+title: "Asistente Virtual FusaBot y Servidor MCP"
+description: "Inteligencia artificial aplicada: Triaje contextual en lenguaje natural con FusaBot y servidor Model Context Protocol (MCP) JSON-RPC 2.0."
+---
+
+## 1. Triaje Contextual de FusaBot
+
+El asistente virtual flotante no es un iframe externo, sino un componente nativo implementado en `ConsumerController::assistantSearch`:
+
+- **Clasificación de Intenciones en Tiempo Real:**
+  - **Búsqueda de Productos:** Genera tarjetas visuales interactivas con foto en formato WebP, precio en COP, stock disponible y botón directo de compra.
+  - **Preguntas de Lealtad (FusaCoins):** Explica las tasas de acumulación y reglas de canje.
+  - **Consejos para Comerciantes:** Ofrece recomendaciones de fijación de precios y rotación de inventario sin sugerir compra de productos de competidores.
+  - **Escalamiento Crítico:** Cuando el usuario reporta términos como *"cobro duplicado"*, *"estafa"* o *"paquete no llega"*, el sistema abre automáticamente un caso con prioridad alta y enlaza al chat con un analista humano.
+
+---
+
+## 2. Servidor Model Context Protocol (MCP)
+
+FusaShop expone un servidor conforme al estándar de la industria **Model Context Protocol (MCP)** bajo especificación **JSON-RPC 2.0**, permitiendo a agentes externos (como Google Gemini o Claude) interactuar de forma segura con la plataforma:
+
+- **Endpoint:** `POST /api/mcp`
+- **Autenticación:** Cabecera obligatoria `Authorization: Bearer <services.fusashop.mcp_token>`
+
+### Herramientas Expuestas (`tools/list` & `tools/call`)
+
+1. **`get_order`:** Consulta el estado en vivo de un pedido mediante su código de referencia.
+   ```json
+   {
+     "jsonrpc": "2.0",
+     "id": 1,
+     "method": "tools/call",
+     "params": {
+       "name": "get_order",
+       "arguments": { "reference": "FS-A1B2C3D4E5" }
+     }
+   }
+   ```
+2. **`search_catalog`:** Busca productos activos en el catálogo filtrando por término o categoría.
+3. **`get_store_metrics`:** Retorna indicadores operativos de una tienda para analistas autorizados.

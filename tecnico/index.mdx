@@ -1,0 +1,51 @@
+---
+title: "Arquitectura de Software y Modelo Multicapa"
+description: "Diseño arquitectónico del sistema FusaShop: Arquitectura en capas desacopladas, patrones de diseño, comunicación asíncrona y transacciones ACID."
+---
+
+## 1. Arquitectura Multicapa del Sistema
+
+FusaShop implementa una arquitectura multicapa desacoplada que separa claramente la presentación, la lógica del dominio y la persistencia de datos:
+
+```mermaid
+graph TD
+    Client["Navegador Web / Dispositivo Móvil"] -->|HTTP / HTTPS| Gate["Capa de Red & Hardening (Cloudflare / Nginx)"]
+    Gate --> Web["Pipeline de Entrada (Middlewares & FormRequests)"]
+
+    subgraph CapaAplicacion["Capa de Aplicación & Control"]
+        Web --> C_Consumer["ConsumerController"]
+        Web --> C_Merchant["MerchantController"]
+        Web --> C_Analyst["AnalystController"]
+        Web --> C_Api["ApiController (Webhooks & MCP)"]
+    end
+
+    subgraph CapaDominio["Capa de Dominio & Servicios Puros"]
+        C_Consumer --> S_Checkout["CheckoutService"]
+        C_Consumer --> S_Stock["StockService"]
+        C_Merchant --> S_Payment["OrderPaymentService"]
+        C_Api --> S_Envia["EnviaService"]
+        C_Api --> S_Factus["FactusService (API v2)"]
+        C_Analyst --> S_Diag["SalesDiagnosisService"]
+    end
+
+    subgraph CapaAsincrona["Capa Asíncrona (Colas y Workers)"]
+        S_Payment --> Q_Envia["Job: GenerateEnviaShipment"]
+        S_Payment --> Q_Factus["Job: IssueFactusInvoice"]
+        S_Payment --> Q_Mail["Job: SendOrderApprovedEmail"]
+    end
+
+    subgraph CapaPersistencia["Capa de Persistencia & Almacenamiento"]
+        CapaDominio --> DB[(MariaDB / MySQL 8.0 - InnoDB)]
+        CapaAsincrona --> DB
+        CapaDominio --> Storage["Almacenamiento Seguro (Storage Local / S3)"]
+        CapaDominio --> Cache["Caché de Aplicación (Redis / File)"]
+    end
+```
+
+---
+
+## 2. Principios de Diseño Aplicados
+
+- **Separación de Responsabilidades (SoR):** Los controladores únicamente coordinan la entrada HTTP y delegan el procesamiento a clases de servicio especializadas.
+- **Transaccionalidad Fuerte (ACID):** Toda operación que involucre inventario, pagos o estados de órdenes se ejecuta dentro de bloques `DB::transaction()`.
+- **Desacople Orientado a Eventos:** Las operaciones lentas (emisión ante la DIAN, generación de etiquetas PDF de transporte, envío de correos electrónicos) se delegan a trabajadores en segundo plano gestionados por colas.

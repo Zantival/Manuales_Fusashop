@@ -1,0 +1,80 @@
+---
+title: "Módulo del Consumidor / Comprador"
+description: "Guía completa para compradores: Registro seguro con OTP, búsqueda inteligente, carrito, checkout Wompi, logística Envía, facturación electrónica y FusaCoins."
+---
+
+## 1. Registro Seguro y Verificación OTP
+
+Para garantizar la seguridad de la comunidad y evitar fraudes o pedidos fantasma, FusaShop implementa un sistema de autenticación de doble factor sin fricción:
+
+1. **Formulario de Registro:** Ingresa nombre completo, correo electrónico y número de teléfono móvil.
+2. **Código de Verificación OTP:** El sistema genera un código numérico aleatorio de **6 dígitos** con expiración de 10 minutos enviado directamente al correo registrado.
+3. **Verificación de Identidad:** Una vez digitado el código, la cuenta queda activa inmediatamente.
+4. **Inicio de Sesión Social:** También puedes ingresar con **Google OAuth** o credenciales convencionales con protección contra fuerza bruta (bloqueo progresivo tras 5 intentos erróneos).
+
+---
+
+## 2. Búsqueda Inteligente y Catálogo Territorial
+
+El portal del consumidor cuenta con múltiples herramientas para encontrar productos y servicios locales:
+
+- **Omnibar Inteligente:** Barra de búsqueda con búsqueda predictiva por texto, búsqueda por voz y búsqueda por imagen.
+- **Filtros Avanzados:** Filtrado por categoría, rango de precios, disponibilidad inmediata y municipio de origen.
+- **Directorio Comercial:** Mapa interactivo con geolocalización de las tiendas físicas y virtuales de Fusagasugá y el Sumapaz.
+
+---
+
+## 3. Carrito con Selección Selectiva (Físicos vs. O2O)
+
+FusaShop distingue automáticamente entre dos modalidades de compra:
+
+<Tabs>
+  <Tab title="Productos Físicos Despachables">
+    * Requieren dirección de entrega verificada con código postal.
+    * El sistema cotiza en tiempo real el flete con **Envía Colvanes** según el peso y dimensiones volumétricas.
+    * Se reserva el inventario por **30 minutos** mientras completas el pago para evitar que otro comprador agote el stock.
+  </Tab>
+  <Tab title="Servicios y Reservas Presenciales (O2O)">
+    * No generan costo de flete logístico.
+    * Generan un comprobante digital con código QR para redimir directamente en el establecimiento físico del comerciante.
+  </Tab>
+</Tabs>
+
+---
+
+## 4. Checkout Seguro con Pasarela Wompi
+
+El pago se procesa directamente a través de **Wompi Bancolombia**, cumpliendo con los estándares PCI-DSS Nivel 1:
+
+- **Medios de Pago Aceptados:**
+  - Tarjetas de Crédito y Débito (Visa, Mastercard, American Express).
+  - Cuentas de Ahorros / Corriente mediante **PSE**.
+  - Billeteras Digitales (**Nequi** y **Bancolombia QR**).
+- **Firma de Integridad Criptográfica:** Cada transacción viaja firmada con SHA-256 (`reference + amount_in_cents + currency + integrity_secret`), haciendo imposible la alteración de montos.
+
+---
+
+## 5. Rastreo Logístico en Tiempo Real (Envía Colvanes)
+
+Una vez aprobado el pago por Wompi:
+1. El pedido pasa al estado **Pagado / En empaque**.
+2. El sistema genera automáticamente el número de guía de **Envía Colvanes**.
+3. Puedes descargar el rótulo de transporte o consultar el estado del envío directamente desde la sección **Mis Pedidos** con actualizaciones sincronizadas vía webhook.
+
+---
+
+## 6. Facturación Electrónica DIAN Automática (Factus)
+
+En cumplimiento de la legislación tributaria colombiana:
+- El sistema se integra con **Factus API v2** para generar la factura electrónica de venta con validación previa de la DIAN.
+- En la vista del pedido, el comprador dispone de dos botones directos:
+  - **Descargar Factura PDF:** Representación gráfica oficial con código QR y CUFE.
+  - **Descargar Archivo XML:** Documento legal estructurado firmado digitalmente.
+
+---
+
+## 7. FusaCoins y FusaBot IA
+
+- **Programa de Lealtad FusaCoins:** Cada compra confirmada acumula puntos canjeables por descuentos directos en futuras compras.
+- **Asistente Virtual FusaBot:** Chatbot inteligente flotante disponible 24/7 en la plataforma para responder dudas de productos, políticas de envío, estado de órdenes o escalar solicitudes directamente al equipo humano.
+- **Radicación de PQRS:** Módulo para presentar Peticiones, Quejas, Reclamos o Sugerencias con seguimiento del tiempo legal de respuesta (máximo 15 días hábiles).

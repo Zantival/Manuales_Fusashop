@@ -1,0 +1,56 @@
+---
+title: "Topología del Proyecto y Convenciones de Código"
+description: "Estructura de carpetas en FusaShop, convenciones de nomenclatura, organización modular de controladores, modelos, jobs y servicios."
+---
+
+## 1. Organización del Árbol de Directorios
+
+La estructura de FusaShop sigue los principios de separación de responsabilidades y modularidad por dominio:
+
+```text
+fusashop2/
+├── app/
+│   ├── Casts/                      # Casts personalizados de Eloquent (Cifrado simétrico AES)
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │   ├── Analyst/            # Consola administrativa e inteligencia de negocio
+│   │   │   ├── Auth/               # Autenticación, registro OTP y OAuth social
+│   │   │   ├── Consumer/           # Portal del comprador, checkout y catálogo
+│   │   │   ├── Merchant/           # Merchant Center, productos, finanzas y pauta
+│   │   │   └── ApiController.php   # Endpoints públicos y webhook handlers
+│   │   └── Middleware/             # SecurityHeaders, CompressResponse, CheckRole
+│   ├── Jobs/                       # Tareas asíncronas (GenerateEnviaShipment, IssueFactusInvoice)
+│   ├── Models/                     # Entidades Eloquent y relaciones de datos
+│   └── Services/                   # Lógica pura de negocio independiente del framework
+│       ├── Admin/                  # Diagnóstico causal y métricas territoriales
+│       ├── CheckoutService.php     # Orquestación de cotización y orden
+│       ├── EnviaService.php        # Integración con Envia.com
+│       ├── FactusService.php       # Integración con Factus API v2 (DIAN)
+│       ├── OrderPaymentService.php # Confirmación de pagos y conciliación
+│       ├── StockService.php        # Reserva y compromiso atómico de inventario
+│       └── WompiService.php        # Firmas de integridad y webhooks
+├── config/                         # Configuraciones (services.php, database.php, etc.)
+├── database/
+│   ├── migrations/                 # 37 migraciones versionadas
+│   └── seeders/                    # Sembradores de datos de prueba locales
+├── docs/                           # Manuales generados en PDF, HTML y diagramas Mermaid
+├── resources/
+│   ├── css/app.css                 # Entrada Tailwind CSS v4
+│   └── views/                      # Plantillas Blade estructuradas por rol
+└── routes/
+    ├── web.php                     # Rutas HTTP, webhooks y autenticación
+    └── console.php                 # Comandos Artisan programados (Scheduler)
+```
+
+---
+
+## 2. Convenciones de Nomenclatura y Estilo
+
+FusaShop se rige estrictamente por los estándares **PSR-12** y las convenciones de Laravel:
+
+- **Modelos:** Singular en PascalCase (`Order`, `CompanyProfile`, `BannerRequest`).
+- **Tablas:** Plural en snake_case (`orders`, `company_profiles`, `banner_requests`).
+- **Claves Foráneas:** Nombre de la entidad en singular seguido de `_id` (`merchant_id`, `shipping_address_id`).
+- **Controladores:** Sufijo `Controller` en PascalCase (`CheckoutController`, `MerchantController`).
+- **Servicios:** Sufijo `Service` orientados al dominio (`StockService`, `FactusService`).
+- **Jobs:** Modo imperativo (`GenerateEnviaShipment`, `IssueFactusInvoice`).

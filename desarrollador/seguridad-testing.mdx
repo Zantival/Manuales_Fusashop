@@ -1,0 +1,42 @@
+---
+title: "Seguridad, Cifrado y Suite de Pruebas Automatizadas"
+description: "Pipeline de seguridad defensiva, verificación OTP, bitácora forense de auditoría y suite de 76 tests automatizados en Laravel."
+---
+
+## 1. Pipeline de Middlewares de Seguridad
+
+Toda petición entrante atraviesa un pipeline defensivo estricto:
+
+- **`CheckRole`:** Control de acceso basado en roles (`consumer`, `merchant`, `analyst`). Un consumidor o comerciante recibe un error HTTP 403 inmediato si intenta acceder a rutas del espacio `/admin`.
+- **`SecurityHeaders`:** Inyecta cabeceras HTTP de hardening: `X-Frame-Options: SAMEORIGIN`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy`.
+- **`CompressResponse`:** Compresión dinámica con algoritmos Gzip o Deflate según la cabecera `Accept-Encoding`, reduciendo el payload de red entre un 60% y un 80%.
+
+---
+
+## 2. Verificación de 6 Dígitos por Correo (OTP)
+
+- Al registrarse o cambiar datos sensibles, el usuario recibe un código numérico aleatorio (`random_int(100000, 999999)`).
+- El código se almacena con marca de tiempo de expiración de 10 minutos.
+- Tras 5 intentos erróneos, la verificación se bloquea temporalmente por seguridad.
+
+---
+
+## 3. Suite de Pruebas Automatizadas (76 Tests)
+
+FusaShop cuenta con una suite completa de pruebas unitarias y de integración que verifican la totalidad de los flujos críticos sin depender de servicios externos reales:
+
+```bash
+php artisan test
+```
+
+### Cobertura de Pruebas Clave:
+- **`CheckoutFlowTest` (17 pruebas):**
+  - Firma de integridad SHA-256 de Wompi.
+  - Rechazo de firmas inválidas y timestamps obsoletos.
+  - Reserva atómica de inventario y compromiso tras pago.
+  - Generación asíncrona de facturas DIAN con Factus API v2 y guías Envía.
+  - Idempotencia en eventos retransmitidos.
+  - Protocolo MCP JSON-RPC con autenticación Bearer.
+- **`AdminSecurityAndGovernanceTest`:** Aislamiento de roles y auditoría forense.
+- **`FusaBotAssistantTest`:** Clasificación de intenciones y escalamiento a PQRS.
+- **`MerchantBannerAdvertisingTest`:** Creación de banners y selección de cuentas de dispersión.

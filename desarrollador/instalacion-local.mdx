@@ -1,0 +1,69 @@
+---
+title: "Guía de Instalación Local y Flujo de Trabajo"
+description: "Paso a paso para desplegar el entorno de desarrollo local de FusaShop, ejecución de seeders, optimización gráfica y flujo Git."
+---
+
+## 1. Prerrequisitos de la Estación de Trabajo
+
+Asegúrate de contar con las siguientes herramientas instaladas:
+- **PHP:** Versión 8.2 o superior (con extensiones `curl`, `mbstring`, `openssl`, `pdo_mysql`, `gd` o `imagick`).
+- **Composer:** Versión 2.7+.
+- **Node.js:** Versión 20.x LTS o 22.x LTS y gestor `npm`.
+- **Motor de Base de Datos:** MariaDB 10.6+ o MySQL 8.0+.
+- **Git:** Cliente de control de versiones.
+
+---
+
+## 2. Secuencia de Comandos para Puesta en Marcha
+
+```bash
+# 1. Clonar el repositorio
+git clone https://github.com/Zantival/fusashop2.git
+cd fusashop2
+
+# 2. Instalar dependencias del backend PHP
+composer install
+
+# 3. Instalar dependencias del frontend Node
+npm install
+
+# 4. Configurar variables de entorno
+cp .env.example .env
+php artisan key:generate
+
+# 5. Ejecutar migraciones con datos de prueba
+php artisan migrate --seed
+
+# 6. Compilar recursos con Tailwind CSS v4
+npm run build
+
+# 7. Iniciar el servidor de desarrollo
+php artisan serve
+```
+
+La aplicación quedará disponible en `http://localhost:8000`.
+
+### Cuentas Sembradas por Defecto (Seeders):
+- **Super Administrador / Analista:** `admin@fusashop.com` / `password`
+- **Comerciante Verificado:** `tienda@fusashop.com` / `password`
+- **Consumidor:** `juan@fusashop.com` / `password`
+
+---
+
+## 3. Optimización de Imágenes a Formato WebP
+
+Para mantener tiempos de carga ultrarrápidos, el proyecto incluye un script de optimización automatizada mediante la librería `sharp`:
+
+```bash
+node scripts/optimize-images.cjs
+```
+
+Este script procesa las imágenes de `public/` y `dist/`, generando copias `.webp` con compresión sin pérdidas apreciables.
+
+---
+
+## 4. Estándares Git Flow y Contribución
+
+- **Ramas Principales:** `main` (código estable de producción) y ramas de funcionalidad `feature/nombre-tarea`.
+- **Commits Convencionales:** `feat: nueva integración`, `fix: corrección de cálculo`, `perf: optimización de consultas`.
+- **Integración Continua:** Todo cambio debe superar la suite de 76 pruebas automatizadas (`php artisan test`) antes de integrarse.

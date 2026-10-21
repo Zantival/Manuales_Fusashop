@@ -1,0 +1,75 @@
+---
+title: "Capa de Servicios del Dominio y Lógica de Negocio"
+description: "Servicios desacoplados en FusaShop: Gestión atómica de stock con bloqueos pesimistas, orquestación de checkout y algoritmos analíticos."
+---
+
+## 1. Gestión Atómica de Stock (`StockService`)
+
+El mayor riesgo en comercio electrónico es la **sobreventa por concurrencia** (*race condition*), donde dos usuarios compran la última unidad disponible al mismo milisegundo. FusaShop resuelve esto mediante **bloqueos pesimistas a nivel de fila** (`SELECT ... FOR UPDATE`):
+
+```php
+namespace App\Services;
+
+use App\Models\Order;
+use App\Models\Product;
+use Illuminate\Support\Facades\DB;
+use RuntimeException;
+
+class StockService
+{
+    /** Reserva stock con bloqueo pesimista por 30 minutos */
+    public function reserve(Order $order): void
+    {
+        DB::transaction(function () use ($order) {
+            foreach ($order->items as $item) {
+                // Bloqueo pesimista a nivel de fila en la base de datos
+                $product = Product::where('id', $item->product_id)
+                    ->lockForUpdate()
+                    ->firstOrFail();
+
+                $available = $product->stock - $product->reserved_stock;
+                if ($available < $item->quantity) {
+                    throw new RuntimeException("Stock insuficiente para: {$product->name}");
+                }
+
+                $product->increment('reserved_stock', $item->quantity);
+            }
+
+            $order->update([
+                'stock_reserved'         => true,
+                'reservation_expires_at' => now()->addMinutes(config('services.fusashop.reservation_minutes', 30)),
+            ]);
+        });
+    }
+
+    /** Descuenta definitivamente el stock físico tras la aprobación del pago */
+    public function commit(Order $order): void
+    {
+        DB::transaction(function () use ($order) {
+            foreach ($order->items as $item) {
+                $product = Product::where('id', $item->product_id)->lockForUpdate()->firstOrFail();
+                $product->decrement('stock', $item->quantity);
+                $product->decrement('reserved_stock', $item->quantity);
+            }
+            $order->update(['stock_reserved' => false]);
+        });
+    }
+}
+```
+
+---
+
+## 2. Orquestación del Checkout (`CheckoutService`)
+
+Responsable de procesar la canasta de compras del usuario:
+1. Valida disponibilidad y vigencia de precios en el carrito.
+2. Agrupa ítems por vendedor para liquidar comisiones individuales.
+3. Consume `EnviaService` para cotizar el flete logístico más favorable según código postal.
+4. Instancia la orden en estado `pending` e invoca `StockService::reserve`.
+
+---
+
+## 3. Servicios de Analítica Avanzada (`app/Services/Admin/`)
+
+- **`DashboardMetricsService`:** Consolida métricas financieras (GMV, ticket promedio, margen de comisión, dispersiones pendientes).
+- **`SalesDiagnosisService`:** Heurística de diagnóstico territorial que evalúa rotación de inventario, comercios inactivos y alerta a los analistas sobre caídas imprevistas de demanda en sectores específicos del Sumapaz.
