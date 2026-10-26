@@ -1,13 +1,54 @@
 {
   "$schema": "https://mintlify.com/docs.json",
+  "name": "FusaShop - Universidad de Cundinamarca",
   "theme": "mint",
-  "name": "FusaShop",
   "colors": {
     "primary": "#006C47",
     "light": "#10B981",
     "dark": "#064E3B"
   },
   "favicon": "/favicon.svg",
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg"
+  },
+  "seo": {
+    "indexing": "all"
+  },
+  "contextual": {
+    "display": "header",
+    "options": [
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "cursor",
+      "vscode",
+      "mcp"
+    ]
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Manual Usuario (PDF)",
+        "href": "/pdfs/Manual_de_Usuario_FusaShop.pdf"
+      },
+      {
+        "label": "Manual Dev (PDF)",
+        "href": "/pdfs/Manual_de_Desarrollador_FusaShop.pdf"
+      },
+      {
+        "label": "Manual Técnico (PDF)",
+        "href": "/pdfs/Manual_Tecnico_FusaShop.pdf"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Portal FusaShop",
+      "href": "https://fusashop.com"
+    }
+  },
   "navigation": {
     "tabs": [
       {
@@ -33,13 +74,13 @@
             ]
           },
           {
-            "group": "Módulo de Analistas / Admin",
+            "group": "Módulo de Analistas / Administración",
             "pages": [
               "usuario/analista"
             ]
           },
           {
-            "group": "Soporte y Preguntas Frecuentes",
+            "group": "Mesa de Ayuda y Soporte",
             "pages": [
               "usuario/faq-soporte"
             ]
@@ -71,7 +112,7 @@
             ]
           },
           {
-            "group": "Calidad & Despliegue",
+            "group": "Calidad, Seguridad y Entorno",
             "pages": [
               "desarrollador/seguridad-testing",
               "desarrollador/instalacion-local"
@@ -83,7 +124,7 @@
         "tab": "Manual Técnico",
         "groups": [
           {
-            "group": "Diseño de Sistemas",
+            "group": "Diseño de Sistemas y Datos",
             "pages": [
               "tecnico/index",
               "tecnico/diccionario-datos",
@@ -106,31 +147,6 @@
         ]
       }
     ]
-  },
-  "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
-  },
-  "navbar": {
-    "links": [
-      {
-        "label": "Manual Usuario (PDF)",
-        "href": "/pdfs/Manual_de_Usuario_FusaShop.pdf"
-      },
-      {
-        "label": "Manual Dev (PDF)",
-        "href": "/pdfs/Manual_de_Desarrollador_FusaShop.pdf"
-      },
-      {
-        "label": "Manual Técnico (PDF)",
-        "href": "/pdfs/Manual_Tecnico_FusaShop.pdf"
-      }
-    ],
-    "primary": {
-      "type": "button",
-      "label": "Portal FusaShop",
-      "href": "https://fusashop.com"
-    }
   },
   "footer": {
     "socials": {

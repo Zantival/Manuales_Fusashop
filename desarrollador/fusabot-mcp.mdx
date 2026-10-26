@@ -3,38 +3,119 @@ title: "Asistente Virtual FusaBot y Servidor MCP"
 description: "Inteligencia artificial aplicada: Triaje contextual en lenguaje natural con FusaBot y servidor Model Context Protocol (MCP) JSON-RPC 2.0."
 ---
 
-## 1. Triaje Contextual de FusaBot
+## 1. Triaje Contextual de FusaBot en la Tienda
 
-El asistente virtual flotante no es un iframe externo, sino un componente nativo implementado en `ConsumerController::assistantSearch`:
+El asistente virtual flotante de FusaShop no es un iframe externo ni un chatbot genérico: es un componente nativo integrado en el controlador `ConsumerController::assistantSearch` y optimizado para el contexto comercial del Sumapaz:
 
-- **Clasificación de Intenciones en Tiempo Real:**
-  - **Búsqueda de Productos:** Genera tarjetas visuales interactivas con foto en formato WebP, precio en COP, stock disponible y botón directo de compra.
-  - **Preguntas de Lealtad (FusaCoins):** Explica las tasas de acumulación y reglas de canje.
-  - **Consejos para Comerciantes:** Ofrece recomendaciones de fijación de precios y rotación de inventario sin sugerir compra de productos de competidores.
-  - **Escalamiento Crítico:** Cuando el usuario reporta términos como *"cobro duplicado"*, *"estafa"* o *"paquete no llega"*, el sistema abre automáticamente un caso con prioridad alta y enlaza al chat con un analista humano.
+<CardGroup cols={2}>
+  <Card title="Búsqueda Inteligente de Productos" icon="magnifying-glass">
+    Interpreta lenguaje natural (ej. *"necesito café especial de Fusagasugá con acidez media"*), genera consultas con filtros semánticos y devuelve tarjetas reactivas interactivas con foto en WebP, precio en COP, stock y botón directo de compra.
+  </Card>
+  <Card title="Reglas de Lealtad (FusaCoins)" icon="coins">
+    Explica de forma personalizada las tasas de acumulación (1 FusaCoin por cada $1.000 COP en compras) y cómo redimirlos en checkout como descuento directo.
+  </Card>
+  <Card title="Asesoría Comercial Ética" icon="store">
+    Brinda a los comerciantes sugerencias de fijación de precios, rotación de inventario y optimización de descripciones sin sesgo competitivo desleal.
+  </Card>
+  <Card title="Escalamiento Crítico de PQRS" icon="triangle-exclamation">
+    Detecta de inmediato intenciones de inconformidad grave (*"estafa"*, *"paquete no llega"*, *"cobro doble"*) y crea automáticamente un ticket de soporte con prioridad alta enlazando a un analista humano.
+  </Card>
+</CardGroup>
 
 ---
 
 ## 2. Servidor Model Context Protocol (MCP)
 
-FusaShop expone un servidor conforme al estándar de la industria **Model Context Protocol (MCP)** bajo especificación **JSON-RPC 2.0**, permitiendo a agentes externos (como Google Gemini o Claude) interactuar de forma segura con la plataforma:
+FusaShop implementa el estándar abierto **Model Context Protocol (MCP)** bajo la especificación **JSON-RPC 2.0**, permitiendo que agentes de IA avanzados (como Claude, Cursor, o el Asistente de Mintlify) se comuniquen de forma segura con los datos vivos de la plataforma:
 
-- **Endpoint:** `POST /api/mcp`
-- **Autenticación:** Cabecera obligatoria `Authorization: Bearer <services.fusashop.mcp_token>`
+- **Endpoint Oficial:** `POST /api/mcp`
+- **Protocolo de Transporte:** Streamable HTTP / JSON-RPC 2.0
+- **Seguridad:** Requiere cabecera obligatoria `Authorization: Bearer <services.fusashop.mcp_token>`
+- **Modo de Operación:** Solo lectura estricta (`read-only`) para garantizar la inmutabilidad de la base de datos ante agentes autónomos.
 
 ### Herramientas Expuestas (`tools/list` & `tools/call`)
 
-1. **`get_order`:** Consulta el estado en vivo de un pedido mediante su código de referencia.
-   ```json
-   {
-     "jsonrpc": "2.0",
-     "id": 1,
-     "method": "tools/call",
-     "params": {
-       "name": "get_order",
-       "arguments": { "reference": "FS-A1B2C3D4E5" }
-     }
-   }
-   ```
-2. **`search_catalog`:** Busca productos activos en el catálogo filtrando por término o categoría.
-3. **`get_store_metrics`:** Retorna indicadores operativos de una tienda para analistas autorizados.
+<ResponseField name="search_catalog" type="tool">
+  Busca productos activos en el catálogo filtrando por texto libre, rango de precio o municipio.
+</ResponseField>
+
+<ResponseField name="get_order_status" type="tool">
+  Consulta el estado en tiempo real, guía de Envía y factura DIAN de un pedido mediante su código de referencia.
+</ResponseField>
+
+<ResponseField name="get_store_metrics" type="tool">
+  Retorna indicadores operativos consolidados (volumen de ventas, pedidos pendientes, calificación promedio) de un comercio para analistas autorizados.
+</ResponseField>
+
+<ResponseField name="get_merchant_info" type="tool">
+  Consulta la ficha pública y el estado de validación KYC de un comercio registrado en la plataforma.
+</ResponseField>
+
+---
+
+## 3. Ejemplo de Interacción JSON-RPC 2.0
+
+Para consultar el estado de una orden vía MCP:
+
+<CodeGroup>
+```json Solicitud (tools/call)
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "get_order_status",
+    "arguments": {
+      "reference": "FS-2026-9812A"
+    }
+  }
+}
+```
+
+```json Respuesta Exitosa
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "reference": "FS-2026-9812A",
+    "status": "shipped",
+    "payment_status": "approved",
+    "carrier": "Envía Colvanes",
+    "tracking_number": "012893478912",
+    "tracking_url": "https://envia.co/rastreo?guia=012893478912",
+    "invoice": {
+      "cufe": "f8a92b1049c81920d...",
+      "dian_status": "VALIDADA"
+    }
+  }
+}
+```
+</CodeGroup>
+
+---
+
+## 4. Conexión de Clientes MCP Externos
+
+### Conectar Claude Desktop
+Para conectar Claude Desktop con FusaShop, añade el siguiente bloque a tu archivo `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "fusashop": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-fetch",
+        "https://fusashop.com/api/mcp"
+      ],
+      "env": {
+        "MCP_BEARER_TOKEN": "<TU_TOKEN_SANCTUM_FUSASHOP>"
+      }
+    }
+  }
+}
+```
+
+### Conectar en Cursor o IDEs Compatibles
+En la configuración de Cursor (`.cursor/mcp.json`), registra el servidor seleccionando transporte SSE o HTTP y especificando la URL del endpoint y tu token de portador.
