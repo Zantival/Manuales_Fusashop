@@ -1,49 +1,37 @@
 ---
 title: "Visión General y Roles de FusaShop"
-description: "Introducción al ecosistema de FusaShop, propósito regional en el Sumapaz y modelo de actores: Consumidor, Comerciante y Analista."
+description: "Estructura del Manual de Usuario, taxonomía de roles, modelo de permisos y requisitos de acceso en FusaShop."
 ---
 
-## 1. Introducción y Propósito Regional
+## 1. Propósito Territorial y Enfoque de Usuarios
 
-**FusaShop** nace como una solución de comercio electrónico multitienda y omnicanal orientada a resolver las barreras tradicionales de digitalización de las micro, pequeñas y medianas empresas (MiPyMEs) de **Fusagasugá y la Provincia del Sumapaz** (Silvania, Arbeláez, Pasca, San Bernardo, Pandi, Tibacuy, Cabrera, Granada, Venecia).
+**FusaShop** resuelve la brecha de digitalización de micro, pequeñas y medianas empresas (MiPyMEs) de **Fusagasugá y la Provincia del Sumapaz** (Silvania, Arbeláez, Pasca, San Bernardo, Pandi, Tibacuy, Cabrera, Granada y Venecia).
 
-La plataforma no es simplemente una tienda virtual: es una **infraestructura territorial** que conecta el comercio formal local con consumidores digitales, articulando en un único flujo de compra:
-- Pasarela de pago segura multitienda (**Wompi Bancolombia**).
-- Liquidación y generación de guías logísticas con cobertura nacional (**Envía Colvanes**).
-- Emisión automática de facturación electrónica validada ante la DIAN (**Factus API v2**).
-- Asistencia virtual inteligente basada en IA y protocolo de contexto (**FusaBot + MCP**).
+El sistema define tres roles con permisos y flujos estrictamente diferenciados:
+
+| Rol | Identificador en Sistema | Requisitos de Acceso | Funcionalidad Principal |
+|---|---|---|---|
+| **Consumidor** | `consumer` | Registro verificado por código OTP de 6 dígitos. | Búsqueda, carrito, compra con Wompi, reserva de servicios, seguimiento Envía, facturas DIAN y PQRS. |
+| **Comerciante** | `merchant` | Correo verificado + Aprobación documental KYC (RUT, ID, Cámara de Comercio). | Publicación de catálogo, control de existencias, configuración de cuentas bancarias, emisión de guías de despacho y reportes de ventas. |
+| **Analista / Admin** | `analyst` | Credenciales asignadas y permisos institucionales. | Auditoría y validación de expedientes KYC, dispersión de fondos, monitoreo de salud de APIs, gobierno de banners y resolución de PQRS. |
 
 ---
 
-## 2. Los Tres Roles de la Plataforma
+## 2. Mapa de Guías del Manual de Usuario
 
-```mermaid
-graph TD
-    User([Usuario Registrado]) -->|Rol consumer| C[Consumidor / Comprador]
-    User -->|Rol merchant| M[Comerciante / Vendedor]
-    User -->|Rol analyst / admin| A[Analista / Administrador]
+Explora las guías operativas detalladas según tu rol o necesidad:
 
-    C --> C1[Explora Catálogo y Directorio O2O]
-    C --> C2[Paga con Wompi y Recibe Guía Envía]
-    C --> C3[Descarga Factura DIAN y Acumula FusaCoins]
-
-    M --> M1[Publica Catálogo de Productos/Servicios]
-    M --> M2[Configura Cuentas de Pago: Bancos / Nequi / Daviplata]
-    M --> M3[Despacha Pedidos y Solicita Banners]
-
-    A --> A1[Audita Comercios y Valida KYC con RUT]
-    A --> A2[Configura Destino de Ingresos de Banners]
-    A --> A3[Supervisa Métricas y Resuelve PQRS]
-```
-
-<CardGroup cols={3}>
-  <Card title="Consumidor" icon="bag-shopping" href="/usuario/consumidor">
-    Compradores residenciales o corporativos que acceden a productos físicos y servicios locales con entrega a domicilio o reserva presencial.
+<CardGroup cols={2}>
+  <Card title="Guía del Consumidor" icon="bag-shopping" href="/usuario/consumidor">
+    Aprende a registrarte, verificar tu cuenta por OTP, seleccionar productos físicos o servicios, pagar con Wompi, rastrear envíos y descargar facturas electrónicas.
   </Card>
-  <Card title="Comerciante" icon="store" href="/usuario/comerciante">
-    Empresas, tiendas, artesanos y prestadores de servicios que gestionan inventario, precios, despachos y reciben pagos directos.
+  <Card title="Guía del Comerciante (Merchant Center)" icon="store" href="/usuario/comerciante">
+    Proceso completo de onboarding KYC, configuración de cuentas bancarias, gestión de inventario, despacho con guías Envía y finanzas.
   </Card>
-  <Card title="Analista / Admin" icon="shield-halved" href="/usuario/analista">
-    Equipo operativo institucional que audita el ecosistema, valida documentos fiscales (KYC), supervisa transacciones y administra la plataforma.
+  <Card title="Guía del Analista y Administrador" icon="shield-halved" href="/usuario/analista">
+    Supervisión territorial, revisión y aprobación de RUT/KYC, gestión de banners comerciales, bitácora inmutable de auditoría y monitoreo de APIs.
+  </Card>
+  <Card title="Mesa de Ayuda y Preguntas Frecuentes" icon="circle-question" href="/usuario/faq-soporte">
+    Resolución inmediata de incidencias comunes, pagos pendientes en PSE, devoluciones conforme a la Ley 1480 y canales de soporte directo.
   </Card>
 </CardGroup>

@@ -1,61 +1,45 @@
-# Documentación Oficial de FusaShop (Mintlify & PDFs)
+# Documentación Oficial de FusaShop (Universidad de Cundinamarca)
 
-Repositorio oficial de documentación técnica y de usuario para el ecosistema **FusaShop**, diseñado para publicarse en [Mintlify](https://mintlify.com) y distribuirse como manuales independientes en formato PDF.
+Repositorio oficial de documentación técnica, operativa y de usuario para el ecosistema **FusaShop**, diseñado para publicarse en [Mintlify](https://mintlify.com) y consultar en línea a través del portal de documentación.
+
+* **Portal Oficial de la Tienda:** [https://fusashop.shop](https://fusashop.shop)
+* **Organización:** Universidad de Cundinamarca - Programa de Ingeniería de Sistemas
+* **Provincia:** Sumapaz (Fusagasugá y municipios aledaños)
 
 ---
 
-## 📚 Contenido de la Documentación
+## 📚 Estructura de los Manuales
 
 La documentación está organizada en tres manuales exhaustivos correspondientes a la versión **FusaShop v2.4-LTS (Rama Final)**:
 
 1. **Manual de Usuario (`usuario/`):**
-   - **Consumidores:** Registro OTP de 6 dígitos, omnibar con IA (voz/imagen), carrito con separación O2O/físicos, pasarela Wompi (Tarjetas, PSE, Nequi), rastreo logístico Envía Colvanes, facturación electrónica DIAN (Factus API v2), FusaCoins, FusaBot y PQRS.
-   - **Comerciantes:** Onboarding KYC con RUT/Cámara de Comercio, configuración de cuentas bancarias y billeteras digitales (Nequi y Daviplata), inventario con umbrales de stock bajo, despacho y rótulos de transporte, liquidación semanal y pauta publicitaria.
-   - **Analistas / Administradores:** Consola de operaciones, auditoría KYC, bitácora forense (`AdminAuditLog`), supervisión de integraciones y configuración del destino de ingresos por banners publicitarios.
-   - **Preguntas Frecuentes y Soporte:** Marco legal de retracto, tiempos bancarios y canales oficiales.
+   - **Consumidores:** Registro con verificación OTP de 6 dígitos, búsqueda inteligente y directorio territorial, carrito con separación O2O vs. despacho físico, pasarela Wompi (Tarjetas, PSE, Nequi, Botón Bancolombia), rastreo logístico con Envía Colvanes, facturación electrónica DIAN (Factus API v2 con CUFE y QR), FusaCoins, asistente FusaBot y radicación de PQRS.
+   - **Comerciantes:** Onboarding KYC con RUT/Cámara de Comercio, configuración de cuentas bancarias y billeteras digitales (Nequi y Daviplata), inventario con umbrales de stock bajo, despacho y rótulos de transporte, liquidación de ventas y solicitud de pauta publicitaria (banners rotativos y tarjetas patrocinadas).
+   - **Analistas / Administradores:** Panel ejecutivo con métricas territoriales, auditoría y validación documental KYC, dispersión y destino de ingresos por banners, bitácora inmutable `AdminAuditLog` y monitoreo de salud de APIs (`/admin/integrations`).
+   - **Mesa de Ayuda y Soporte:** Preguntas frecuentes, derecho de retracto (Ley 1480 de 2011) y canales de contacto directo.
 
 2. **Manual del Desarrollador (`desarrollador/`):**
-   - **Ecosistema & Stack:** Laravel 12.x, PHP 8.2+, Tailwind CSS v4, Alpine.js y justificación SSR.
-   - **Arquitectura & Modelado:** Cifrado simétrico AES-256-CBC con `EncryptedGatewaySecret` para secretos de pasarela.
-   - **Lógica del Dominio:** `StockService` con reservas atómicas y bloqueos pesimistas (`lockForUpdate`), `CheckoutService` y `OrderPaymentService`.
-   - **Integraciones:** Wompi (firmas SHA-256 e idempotencia), Envía Colvanes y Factus API v2 (DIAN).
-   - **FusaBot & Servidor MCP:** Servidor Model Context Protocol bajo estándar JSON-RPC 2.0 (`/api/mcp`).
-   - **Testing Automatizado:** Suite completa de 76 pruebas automatizadas (17 exclusivas de checkout e integraciones).
-   - **Guía de Instalación:** Secuencia de comandos, seeders locales y convenciones Git Flow.
+   - **Ecosistema & Decisiones (ADR-001):** Laravel 12.x, PHP 8.3, Tailwind CSS v4, Alpine.js y fundamentación de arquitectura Server-Rendered (SSR) sobre SPA para la Provincia del Sumapaz.
+   - **Estructura del Proyecto:** Topología de carpetas, controladores, FormRequests, middlewares y seeders.
+   - **Servicios de Dominio:** Gestión atómica de existencias (`StockService` con `lockForUpdate`), orquestación del checkout y analítica.
+   - **Modelos y Cifrado:** Relaciones Eloquent y cifrado transparente AES-256-CBC (`EncryptedGatewaySecret`) para credenciales bancarias.
+   - **Integraciones Externas:** Wompi (integridad HMAC-SHA256 y webhooks), Envía Colvanes (cotización, rastreo y guías) y Factus API v2 (facturación electrónica DIAN).
+   - **Asistente Virtual & Servidor MCP:** Servidor Model Context Protocol (`/api/mcp`) con transporte JSON-RPC 2.0 y herramientas para agentes autónomos.
+   - **Seguridad & Testing:** Middlewares de seguridad, prevención CSRF, rate limiting y suite de 76 pruebas automatizadas con PHPUnit.
+   - **Instalación Local:** Guía paso a paso para desplegar el entorno de desarrollo.
 
-3. **Manual Técnico (`tecnico/`):**
-   - **Diseño Multicapa:** Separación estricta de controladores, servicios puros, jobs asíncronos y persistencia.
-   - **Diccionario de Datos:** Esquema relacional completo (ERD) con detalle de tablas, claves primarias, foráneas e índices.
-   - **Máquinas de Estado:** Ciclo de vida determinista de órdenes y mitigación de condiciones de carrera.
-   - **Seguridad & Hardening:** Cabeceras HTTP `SecurityHeaders`, compresión dinámica `CompressResponse` y mitigación del OWASP Top 10.
-   - **Optimización:** Negociación gráfica WebP y erradicación de consultas N+1 con Eager Loading.
-   - **Despliegue & Operaciones:** Configuración de Supervisor para workers, cron jobs de Scheduler y checklist de Go-Live.
-
----
-
-## 📄 Descarga de Manuales en PDF
-
-Los tres manuales independientes se encuentran compilados y disponibles dentro de la carpeta [`pdfs/`](./pdfs/):
-
-- 📥 [Manual de Usuario (PDF)](./pdfs/Manual_de_Usuario_FusaShop.pdf)
-- 📥 [Manual del Desarrollador (PDF)](./pdfs/Manual_de_Desarrollador_FusaShop.pdf)
-- 📥 [Manual Técnico (PDF)](./pdfs/Manual_Tecnico_FusaShop.pdf)
+3. **Manual Técnico y de Operaciones (`tecnico/`):**
+   - **Arquitectura Multicapa:** Diagrama de componentes, flujo de datos y principios SOLID.
+   - **Diccionario de Datos y ERD:** Definición completa de tablas (`company_profiles`, `orders`, `order_items`, `banner_requests`, `admin_audit_logs`), tipos de datos, índices y claves foráneas.
+   - **Máquinas de Estados:** Ciclo de vida estricto de órdenes (`pending` $\rightarrow$ `paid` $\rightarrow$ `processing` $\rightarrow$ `shipped` $\rightarrow$ `delivered`) e idempotencia de webhooks.
+   - **Seguridad y Hardening:** Cabeceras HTTP (`SecurityHeaders`), Content-Security-Policy (CSP), política de cookies y mitigación OWASP Top 10.
+   - **Rendimiento y Resiliencia:** Eager loading sin N+1, negociación de activos WebP y caché Redis.
+   - **Despliegue y Operaciones:** Configuración de Supervisor para colas, Cron para Laravel Scheduler y checklist de producción.
 
 ---
 
-## 🚀 Vista Previa y Despliegue en Mintlify
+## 🤖 Asistente de IA Integrado (FusaBot)
 
-### Previsualización Local con Mintlify CLI
-
-1. Instala el CLI de Mintlify globalmente:
-   ```bash
-   npm i -g mint
-   ```
-2. Inicia el servidor de desarrollo en la raíz del repositorio:
-   ```bash
-   mint dev
-   ```
-3. Abre tu navegador en `http://localhost:3000`.
-
-### Despliegue en Producción
-Al conectar este repositorio con tu proyecto en [dashboard.mintlify.com](https://dashboard.mintlify.com), cada commit a la rama `main` se compila y publica automáticamente.
+El repositorio incluye:
+- `.mintlify/Assistant.md`: Instrucciones de sistema para el Asistente de IA de Mintlify.
+- `assistant.js`: Widget flotante interactivo de IA cargado en todas las páginas de la documentación para responder dudas de usuarios y desarrolladores en tiempo real.

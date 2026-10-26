@@ -18,35 +18,19 @@
   "contextual": {
     "display": "header",
     "options": [
+      "assistant",
       "copy",
       "view",
       "chatgpt",
       "claude",
-      "perplexity",
-      "cursor",
-      "vscode",
-      "mcp"
+      "perplexity"
     ]
   },
   "navbar": {
-    "links": [
-      {
-        "label": "Manual Usuario (PDF)",
-        "href": "/pdfs/Manual_de_Usuario_FusaShop.pdf"
-      },
-      {
-        "label": "Manual Dev (PDF)",
-        "href": "/pdfs/Manual_de_Desarrollador_FusaShop.pdf"
-      },
-      {
-        "label": "Manual Técnico (PDF)",
-        "href": "/pdfs/Manual_Tecnico_FusaShop.pdf"
-      }
-    ],
     "primary": {
       "type": "button",
-      "label": "Portal FusaShop",
-      "href": "https://fusashop.com"
+      "label": "Ir a FusaShop",
+      "href": "https://fusashop.shop"
     }
   },
   "navigation": {

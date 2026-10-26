@@ -1,73 +1,53 @@
 ---
 title: "Documentación Oficial de FusaShop"
-description: "Centro integral de documentación: Manual de Usuario, Manual del Desarrollador y Manual Técnico de la plataforma de comercio electrónico del Sumapaz."
+description: "Centro integral de documentación técnica, operativa y de usuario de FusaShop, plataforma de comercio electrónico territorial de la Provincia del Sumapaz."
 ---
 
-Bienvenido al centro oficial de documentación de **FusaShop**, la plataforma tecnológica de comercio electrónico y servicios O2O diseñada para la digitalización, formalización y dinamización comercial de **Fusagasugá y la Provincia del Sumapaz** (Universidad de Cundinamarca).
+Bienvenido al centro oficial de documentación de **FusaShop**, la plataforma omnicanal de comercio territorial desarrollada en el marco del programa de Ingeniería de Sistemas de la **Universidad de Cundinamarca** para dinamizar el comercio formal y la economía productiva de **Fusagasugá y la Provincia del Sumapaz**.
 
-<Tip>
-  Todos los manuales se encuentran sincronizados con la **rama final** de producción de FusaShop (v2.4-LTS), incluyendo pasarela multitienda Wompi, logística nacional con Envía, facturación electrónica DIAN con Factus API v2 y asistente virtual FusaBot con protocolo MCP.
-</Tip>
-
----
-
-## Asistente de Inteligencia Artificial Integrado
-
-<Card title="Asistente de IA para Responder Preguntas" icon="sparkles" color="#10B981">
-  Esta documentación cuenta con un **asistente de IA integrado** entrenado con la totalidad de los manuales de usuario, desarrollador y técnico. Puedes interactuar con él directamente desde la barra de búsqueda (**Ctrl + K**), haciendo clic en el widget flotante inferior o usando el menú contextual superior en cualquier página para consultar:
-  - Procedimientos de registro, compra y radicación de PQRS.
-  - Guías para comerciantes: KYC, configuración de cuentas bancarias y despacho de pedidos.
-  - Arquitectura Laravel 12 SSR, servicios de dominio y conexión de webhooks.
-  - Modelo relacional MariaDB, máquinas de estados y parámetros de despliegue en VPS.
+<Card title="Ir al Portal Oficial de FusaShop" icon="arrow-up-right-from-square" href="https://fusashop.shop" color="#006C47">
+  Explora la tienda en vivo, consulta comercios locales, catálogo de productos y servicios en **https://fusashop.shop**.
 </Card>
 
 ---
 
-## Descarga de Manuales Oficiales en PDF
+## Asistente de Inteligencia Artificial (FusaBot IA)
 
-Si necesitas los manuales en formato imprimible o para archivo institucional, puedes descargarlos de manera independiente a continuación:
+<Tip>
+  En cualquier página de esta documentación puedes interactuar con **FusaBot IA**, haciendo clic en el botón flotante **"Ayudante IA"** en la esquina inferior derecha o usando el atajo **Ctrl + K**. El asistente conoce a profundidad la totalidad de las especificaciones, código, flujos de usuario y arquitectura técnica de FusaShop.
+</Tip>
+
+---
+
+## Los Tres Manuales Especializados
+
+La documentación está organizada en tres manuales orientados a los distintos actores del ecosistema:
 
 <CardGroup cols={3}>
-  <Card title="Manual de Usuario" icon="file-pdf" href="/pdfs/Manual_de_Usuario_FusaShop.pdf">
-    Guía completa para Compradores, Comerciantes y Analistas. Flujos de compra, despacho, KYC y PQRS.
+  <Card title="Manual de Usuario" icon="users" href="/usuario" color="#006C47">
+    Guías paso a paso para **Consumidores**, **Comerciantes** (onboarding KYC, catálogo y guías de despacho) y **Analistas/Administradores** institucionales.
   </Card>
-  <Card title="Manual del Desarrollador" icon="file-pdf" href="/pdfs/Manual_de_Desarrollador_FusaShop.pdf">
-    Arquitectura Laravel 12 + Alpine.js, servicios de dominio, APIs externas, servidor MCP y 76 tests automatizados.
+  <Card title="Manual del Desarrollador" icon="code" href="/desarrollador" color="#10B981">
+    Arquitectura Server-Rendered (SSR) con Laravel 12 + Alpine.js, servicios de dominio, integraciones (Wompi, Envía, Factus), servidor MCP y testing.
   </Card>
-  <Card title="Manual Técnico" icon="file-pdf" href="/pdfs/Manual_Tecnico_FusaShop.pdf">
-    Diccionario de base de datos, hardening de seguridad, mitigaciones OWASP, rendimiento WebP y despliegue en VPS.
+  <Card title="Manual Técnico" icon="server" href="/tecnico" color="#003545">
+    Diccionario relacional de datos MariaDB, concurrencia atómica de inventario, máquinas de estados finitos, hardening de seguridad y despliegue en VPS.
   </Card>
 </CardGroup>
 
 ---
 
-## Estructura de la Documentación en Línea
+## Flujo de Interacción Territorial
 
-Navega a través de los tres manuales utilizando las pestañas superiores o los enlaces directos a continuación:
-
-<CardGroup cols={3}>
-  <Card title="Manual de Usuario" icon="users" href="/usuario">
-    Aprende a utilizar la plataforma según tu rol: Consumidor, Comerciante registrado o Analista operativo.
-  </Card>
-  <Card title="Manual del Desarrollador" icon="code" href="/desarrollador">
-    Ecosistema tecnológico, convenciones de código, testing, jobs en segundo plano y cómo extender el sistema.
-  </Card>
-  <Card title="Manual Técnico" icon="server" href="/tecnico">
-    Esquema relacional de base de datos, concurrencia atómica de inventario, crons de mantenimiento y servidores.
-  </Card>
-</CardGroup>
-
----
-
-## Pilares Tecnológicos de FusaShop
+El siguiente diagrama resume cómo se articulan los actores de la plataforma con la infraestructura tecnológica:
 
 ```mermaid
-graph LR
-    A[Cliente / Consumidor] -->|Compra Segura| B(Plataforma FusaShop)
-    C[Comerciante Local] -->|Venta & Despacho| B
-    D[Analista / Admin] -->|Auditoría & KYC| B
-    B -->|Pasarela Transaccional| W[Wompi Bancolombia]
-    B -->|Logística Automatizada| E[Envía Colvanes]
-    B -->|Factura Electrónica| F[Factus DIAN API v2]
-    B -->|Asistencia 24/7| M[FusaBot IA + MCP]
+flowchart LR
+    Consumidor["👤 Consumidor\n(Compra & Reservas)"] -->|Pago Wompi / PSE| FusaShop["🏪 Plataforma FusaShop\n(Laravel 12 SSR)"]
+    Comerciante["🏪 Comerciante Local\n(Inventario & Despacho)"] -->|Gestión de Tienda| FusaShop
+    Analista["🛡️ Analista / Admin\n(Auditoría KYC & Finanzas)"] -->|Gobierno Territorial| FusaShop
+    FusaShop -->|Pasarela de Pagos| Wompi["💳 Wompi Bancolombia"]
+    FusaShop -->|Guías & Logística| Envia["📦 Envía Colvanes"]
+    FusaShop -->|Factura Fiscal DIAN| Factus["🧾 Factus API v2"]
+    FusaShop -->|Protocolo de Contexto| MCP["🤖 Servidor MCP /api/mcp"]
 ```
